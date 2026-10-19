@@ -1,6 +1,7 @@
-// Configuración transparente del fondo de becas (Commit 1)
-const FUND_BUDGET = 150000;
+// Configuración transparente del fondo de becas (Commit 2: Presupuesto ampliado)
+const FUND_BUDGET = 250000;
 const MIN_SCORE_REQUIRED = 75;
+const EXTRACURRICULAR_BONUS = 10;
 
 // Navegación entre pestañas del portal
 function mostrarSeccion(seccion) {
@@ -22,6 +23,7 @@ function evaluarBeca(event) {
   const matricula = document.getElementById('matricula').value.trim();
   const promedio = parseFloat(document.getElementById('promedio').value);
   const ingreso = parseFloat(document.getElementById('ingreso').value);
+  const tieneExtracurricular = document.getElementById('extracurricular').checked;
   const resultadoBox = document.getElementById('resultado-beca');
 
   // Cálculo de puntaje ético: mérito académico + apoyo socioeconómico
@@ -31,6 +33,11 @@ function evaluarBeca(event) {
     puntaje += 25;
   } else if (ingreso <= 25000) {
     puntaje += 15;
+  }
+
+  // Bono legítimo por actividades extracurriculares
+  if (tieneExtracurricular) {
+    puntaje += EXTRACURRICULAR_BONUS;
   }
 
   resultadoBox.classList.remove('hidden', 'result-success', 'result-error');
