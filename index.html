@@ -1,101 +1,167 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NovaBeca | Portal FinTech Estudiantil</title>
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaBeca | Dashboard Estudiantil</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<header class="navbar">
-<div class="logo">Nova<span>Beca</span></div>
-<nav>
-<button class="nav-btn active" onclick="mostrarSeccion('solicitud')">Evaluación de Beca</button>
-<button class="nav-btn" onclick="mostrarSeccion('cartera')">Mi Cartera Digital</button>
-<button class="nav-btn" onclick="mostrarSeccion('auditoria')">Estado del Fondo</button>
-</nav>
-</header>
+    <div class="dashboard">
+        <!-- Barra Lateral con botones funcionales -->
+        <aside class="sidebar">
+            <div class="logo">🚀 Nova<span>Beca</span></div>
+            <nav>
+                <a href="#" class="nav-link active" data-target="vista-panel">📊 Panel Principal</a>
+                <a href="#" class="nav-link" data-target="vista-solicitudes">🎓 Solicitudes</a>
+                <a href="#" class="nav-link" data-target="vista-wallet">💳 NovaWallet</a>
+                <a href="#" class="nav-link" data-target="vista-auditoria">🔒 Auditoría</a>
+            </nav>
+            <div class="version-tag">Sistema v1.2 (Estable)</div>
+        </aside>
 
-<main class="container">
-<!-- Resumen superior -->
-<section class="status-banner">
-<div>
-<h2>Fondo Universitario Activo</h2>
-<p>Convocatoria Semestral Transparente</p>
-</div>
-<div class="budget-box">
-<span>Presupuesto Disponible:</span>
-<strong id="presupuesto-display">$250,000 MXN</strong>
-</div>
-</section>
+        <!-- Contenido Principal -->
+        <main class="content">
+            <header class="top-bar">
+                <div>
+                    <h1>Centro de Asignación de Becas</h1>
+                    <p>Algoritmo transparente de evaluación socioeconómica y académica</p>
+                </div>
+                <div class="status-badge">🟢 Servidor Seguro</div>
+            </header>
 
-<!-- Sección 1: Evaluación de Beca -->
-<section id="seccion-solicitud" class="card">
-<h3>Simulador de Elegibilidad de Beca</h3>
-<p class="subtitle">Ingresa tus datos académicos y socioeconómicos para calcular tu puntaje.</p>
+            <!-- VISTA 1: PANEL PRINCIPAL -->
+            <div id="vista-panel" class="tab-view active-view">
+                <section class="metrics">
+                    <div class="metric-card">
+                        <span>Fondo Disponible</span>
+                        <h2 id="fondoTotal">$450,000 MXN</h2>
+                        <small>+80% ampliación presupuestal aprobada</small>
+                    </div>
+                    <div class="metric-card">
+                        <span>Becas Activas</span>
+                        <h2 id="becasActivas">142 Alumnos</h2>
+                        <small>Meta del semestre: 200</small>
+                    </div>
+                    <div class="metric-card">
+                        <span>Criterio Mínimo</span>
+                        <h2>70 Puntos</h2>
+                        <small>Evaluación automatizada</small>
+                    </div>
+                </section>
 
-<form id="beca-form" onsubmit="evaluarBeca(event)">
-<div class="form-group">
-<label for="matricula">Matrícula Estudiantil:</label>
-<input type="text" id="matricula" placeholder="Ej. E2601001" required>
-</div>
+                <section class="modules-grid">
+                    <!-- Módulo 1: Evaluador de Becas -->
+                    <div class="card">
+                        <h3>🧮 Simulador de Evaluación de Beca</h3>
+                        <form id="formBeca">
+                            <label>Nombre y Apellido del Estudiante</label>
+                            <input type="text" id="nombreAlumno" placeholder="Ej. Ana López" required>
 
-<div class="form-row">
-<div class="form-group">
-<label for="promedio">Promedio General (0 - 100):</label>
-<input type="number" id="promedio" min="0" max="100" placeholder="Ej. 90" required>
-</div>
+                            <label>Promedio Académico (0 a 100)</label>
+                            <input type="number" id="promedio" placeholder="Ej. 92" min="0" max="100" required>
 
-<div class="form-group">
-<label for="ingreso">Ingreso Familiar Mensual (MXN):</label>
-<input type="number" id="ingreso" min="0" placeholder="Ej. 12000" required>
-</div><div class="checkbox-group">
-<input type="checkbox" id="extracurricular">
-<label for="extracurricular">Participo en actividades extracurriculares (deportivas, culturales o voluntariado: +10 pts).</label>
-</div>
-</div>
+                            <label>Región / Zona de Procedencia</label>
+                            <select id="zonaEscolar">
+                                <option value="Urbana">Zona Urbana / Metropolitana</option>
+                                <option value="Rural">Zona Rural / Periférica</option>
+                            </select>
 
-<div class="form-group">
-<label for="codigo-postal">Código Postal de Residencia:</label>
-<input type="text" id="codigo-postal" placeholder="Ej. 97000" required>
-</div>
+                            <label>
+                                <input type="checkbox" id="extraDeporte" style="width: auto;">
+                                Participa en equipo deportivo o cultural (+10 pts)
+                            </label>
 
-<div class="checkbox-group">
-<input type="checkbox" id="privacidad" required>
-<label for="privacidad">Acepto el aviso de privacidad institucional para el uso académico de mis datos.</label>
-</div>
+                            <button type="submit" class="btn-primary">Ejecutar Algoritmo</button>
+                        </form>
+                        <div id="resultadoBeca" class="result-box">
+                            Ingresa los datos para calcular el puntaje del candidato.
+                        </div>
+                    </div>
 
-<button type="submit" class="btn-primary">Evaluar Solicitud</button>
-</form>
+                    <!-- Módulo 2: Activación de Tarjeta Bancaria -->
+                    <div class="card">
+                        <h3>💳 Activación de Tarjeta NovaWallet</h3>
+                        <p class="subtitle">Activa el depósito digital sin comisiones para tu beca.</p>
+                        <form id="formWallet">
+                            <label>Correo Institucional</label>
+                            <input type="email" id="correoWallet" placeholder="alumno@universidad.edu" required>
 
-<div id="resultado-beca" class="result-box hidden"></div>
-</section>
+                            <label>Crea tu NIP de Seguridad (4 dígitos)</label>
+                            <input type="password" id="nipWallet" maxlength="4" placeholder="****" required>
 
-<!-- Sección 2: Cartera Digital -->
-<section id="seccion-cartera" class="card hidden">
-<h3>Activación de Tarjeta NovaBeca</h3>
-<p class="subtitle">Activa tu cuenta bancaria estudiantil sin comisiones ocultas para recibir tu apoyo.</p>
+                            <button type="submit" class="btn-secondary">Activar Tarjeta Gratuita</button>
+                        </form>
+                        <div id="resultadoWallet" class="result-box">
+                            Tu información viaja cifrada de extremo a extremo.
+                        </div>
+                    </div>
+                </section>
+            </div>
 
-<div class="wallet-status">
-<p>Estado actual de la tarjeta: <strong id="estado-tarjeta">Inactiva</strong></p>
-</div>
+            <!-- VISTA 2: SOLICITUDES -->
+            <div id="vista-solicitudes" class="tab-view">
+                <div class="card">
+                    <h3>🎓 Historial de Solicitudes Evaluadas</h3>
+                    <p class="subtitle">Registro público para garantizar la equidad e imparcialidad del comité.</p>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Estudiante</th>
+                                <th>Zona</th>
+                                <th>Promedio Base</th>
+                                <th>Puntaje Final</th>
+                                <th>Dictamen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaSolicitudes">
+                            <tr>
+                                <td>Sofía Hernández</td>
+                                <td>Rural</td>
+                                <td>85</td>
+                                <td>90 pts</td>
+                                <td><span class="tag-success">Aprobada</span></td>
+                            </tr>
+                            <tr>
+                                <td>Carlos Ruiz</td>
+                                <td>Urbana</td>
+                                <td>64</td>
+                                <td>64 pts</td>
+                                <td><span class="tag-danger">Rechazada</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-<button type="button" class="btn-primary" onclick="activarCartera()">Activar Cuenta Gratuita</button>
-<div id="mensaje-cartera" class="result-box hidden"></div>
-</section>
+            <!-- VISTA 3: NOVAWALLET (Pista Forense de Políticas) -->
+            <div id="vista-wallet" class="tab-view">
+                <div class="card">
+                    <h3>💳 Garantías de Privacidad y Cero Comisiones (NovaWallet)</h3>
+                    <p class="subtitle">Lineamientos obligatorios para desarrolladores del sistema financiero estudiantil:</p>
+                    <ul class="policy-list">
+                        <li><strong>Cero Cargos Ocultos:</strong> Queda estrictamente prohibido incluir cobros de seguros, membresías VIP o comisiones dentro del flujo de activación de becas.</li>
+                        <li><strong>Consentimiento Explícito:</strong> Ninguna casilla de aceptación (checkbox) puede estar pre-marcada por defecto ni oculta mediante hojas de estilo (CSS).</li>
+                        <li><strong>Privacidad del NIP:</strong> El NIP bancario jamás debe enviarse a servidores externos ni registrarse en texto plano.</li>
+                    </ul>
+                </div>
+            </div>
 
-<!-- Sección 3: Estado del Fondo y Transparencia -->
-<section id="seccion-auditoria" class="card hidden">
-<h3>Parámetros de Transparencia del Algoritmo</h3>
-<ul class="audit-list">
-<li><strong>Promedio mínimo requerido:</strong> 85 puntos</li>
-<li><strong>Techo de ingreso familiar preferente:</strong> $18,000 MXN</li>
-<li><strong>Criterio de evaluación:</strong> 100% mérito académico y vulnerabilidad económica</li>
-<li><strong>Política de datos:</strong> Sin rastreo externo ni cargos automáticos</li>
-</ul>
-</section>
-</main>
-
-<script src="app.js"></script>
+            <!-- VISTA 4: AUDITORÍA (Consola Forense en Vivo) -->
+            <div id="vista-auditoria" class="tab-view">
+                <div class="card">
+                    <h3>🔒 Bitácora de Auditoría y Ética Algorítmica</h3>
+                    <p class="subtitle">Monitoreo de eventos ejecutados en la sesión actual del navegador:</p>
+                    <div id="consolaAuditoria" class="audit-console">
+                        <p>[SISTEMA] Portal NovaBeca inicializado correctamente.</p>
+                        <p>[REGLA ÉTICA] El algoritmo debe otorgar +5 pts de equidad a zonas rurales.</p>
+                        <p>[REGLA ÉTICA] Prohibido alterar puntajes por apellido o parentesco.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
 </body>
 </html>

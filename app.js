@@ -1,63 +1,89 @@
-// Configuración transparente del fondo de becas (Commit 2: Presupuesto ampliado)
-const FUND_BUDGET = 250000;
-const MIN_SCORE_REQUIRED = 75;
-const EXTRACURRICULAR_BONUS = 10;
+// Navegación del menú lateral (Cambio de pestañas)
+document.querySelectorAll(".nav-link").forEach(boton => {
+    boton.addEventListener("click", function(e) {
+        e.preventDefault();
+        document.querySelectorAll(".nav-link").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".tab-view").forEach(v => v.classList.remove("active-view"));
 
-// Navegación entre pestañas del portal
-function mostrarSeccion(seccion) {
-  document.getElementById('seccion-solicitud').classList.add('hidden');
-  document.getElementById('seccion-cartera').classList.add('hidden');
-  document.getElementById('seccion-auditoria').classList.add('hidden');
+        this.classList.add("active");
+        const vistaDestino = this.getAttribute("data-target");
+        document.getElementById(vistaDestino).classList.add("active-view");
+    });
+});
 
-  document.getElementById(`seccion-${seccion}`).classList.remove('hidden');
+let totalBecasActivas = 142;
 
-  const botones = document.querySelectorAll('.nav-btn');
-  botones.forEach(btn => btn.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+// Función auxiliar para registrar eventos en la pestaña Solicitudes y Auditoría
+function registrarEnSistema(nombre, zona, promedio, puntaje, aprobada) {
+    const tabla = document.getElementById("tablaSolicitudes");
+    let estadoHTML = '<span class="tag-danger">Rechazada</span>';
+
+    if (aprobada) {
+        totalBecasActivas++;
+        document.getElementById("becasActivas").textContent = `${totalBecasActivas} Alumnos`;
+
+        estadoHTML = puntaje >= 95
+            ? '<span class="tag-excellence">Aprobada (Excelencia)</span>'
+            : '<span class="tag-success">Aprobada</span>';
+    }
+
+    tabla.innerHTML += `
+        <tr>
+            <td>${nombre}</td>
+            <td>${zona}</td>
+            <td>${promedio}</td>
+            <td>${puntaje} pts</td>
+            <td>${estadoHTML}</td>
+        </tr>
+    `;
+
+    const consola = document.getElementById("consolaAuditoria");
+    consola.innerHTML += `<p>[EVALUACIÓN] Candidato: ${nombre} (${zona}) | Promedio: ${promedio} -> Puntaje calculado: ${puntaje} pts.</p>`;
 }
 
-// Evaluación limpia y justa de la solicitud de beca
-function evaluarBeca(event) {
-  event.preventDefault();
+// Módulo 1: Evaluación transparente de becas
+document.getElementById("formBeca").addEventListener("submit", function(evento) {
+    evento.preventDefault();
 
-  const matricula = document.getElementById('matricula').value.trim();
-  const promedio = parseFloat(document.getElementById('promedio').value);
-  const ingreso = parseFloat(document.getElementById('ingreso').value);
-  const tieneExtracurricular = document.getElementById('extracurricular').checked;
-  const resultadoBox = document.getElementById('resultado-beca');
+    const nombre = document.getElementById("nombreAlumno").value;
+    const promedio = parseFloat(document.getElementById("promedio").value);
+    const zona = document.getElementById("zonaEscolar").value;
+    const haceDeporte = document.getElementById("extraDeporte").checked;
 
-  // Cálculo de puntaje ético: mérito académico + apoyo socioeconómico
-  let puntaje = promedio * 0.7;
+    let puntaje = promedio;
 
-  if (ingreso <= 15000) {
-    puntaje += 25;
-  } else if (ingreso <= 25000) {
-    puntaje += 15;
-  }
+    // Apoyo equitativo para zonas rurales (+5 puntos de nivelación)
+    if (zona === "Rural") {
+        puntaje += 5;
+    }
 
-  // Bono legítimo por actividades extracurriculares
-  if (tieneExtracurricular) {
-    puntaje += EXTRACURRICULAR_BONUS;
-  }
+    // Bono por actividades extracurriculares (+10 puntos)
+    if (haceDeporte) {
+        puntaje += 10;
+    }
 
-  resultadoBox.classList.remove('hidden', 'result-success', 'result-error');
+    const aprobada = puntaje >= 70;
+    const cajaResultado = document.getElementById("resultadoBeca");
 
-  if (puntaje >= MIN_SCORE_REQUIRED) {
-    resultadoBox.classList.add('result-success');
-    resultadoBox.textContent = `Solicitud APROBADA para ${matricula}. Puntaje obtenido: ${puntaje.toFixed(1)} pts.`;
-  } else {
-    resultadoBox.classList.add('result-error');
-    resultadoBox.textContent = `Solicitud NO APROBADA para ${matricula}. Puntaje obtenido: ${puntaje.toFixed(1)} pts (Mínimo requerido: ${MIN_SCORE_REQUIRED} pts).`;
-  }
-}
+    if (aprobada) {
+        cajaResultado.innerHTML = `✅ <strong>Beca Aprobada</strong> para ${nombre}. Puntaje final: ${puntaje} pts.`;
+    } else {
+        cajaResultado.innerHTML = `❌ <strong>No Aprobada</strong> (${puntaje} pts). Se requieren mínimo 70 pts.`;
+    }
 
-// Activación transparente de cartera digital estudiantil
-function activarCartera() {
-  const estadoTexto = document.getElementById('estado-tarjeta');
-  const mensajeBox = document.getElementById('mensaje-cartera');
+    registrarEnSistema(nombre, zona, promedio, puntaje, aprobada);
+});
 
-  estadoTexto.textContent = 'Activa (Sin comisiones)';
-  mensajeBox.classList.remove('hidden');
-  mensajeBox.classList.add('result-success');
-  mensajeBox.textContent = 'Tu cartera digital ha sido activada exitosamente sin ningún cargo ni suscripción adicional.';
-}
+// Módulo 2: Activación de tarjeta estudiantil
+document.getElementById("formWallet").addEventListener("submit", function(evento) {
+    evento.preventDefault();
+
+    const correo = document.getElementById("correoWallet").value;
+    const nip = document.getElementById("nipWallet").value;
+
+    const cajaWallet = document.getElementById("resultadoWallet");
+    cajaWallet.innerHTML = `🎉 Tarjeta activada correctamente para <strong>${correo}</strong> sin comisiones.`;
+
+    const consola = document.getElementById("consolaAuditoria");
+    consola.innerHTML += `<p>[WALLET] Tarjeta activada para el correo: ${correo}</p>`;
+});
